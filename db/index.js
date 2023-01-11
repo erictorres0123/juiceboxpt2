@@ -18,7 +18,7 @@ async function createUser({username, password})
     {
         const result = await client.query(`
             INSERT INTO users(username, password) VALUES ($1, $2);
-        `,["username", "password"]);
+        `,[username, password]);
         return result;
     }catch(error)
     {
