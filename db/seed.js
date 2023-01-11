@@ -3,46 +3,44 @@ const {client, getAllUsers} = require('./index');
 
 async function testDB() {
     try{
-        console.log('Starting to test database...')
-        //connect the client to the database, finally
-        client.connect();
-
+        console.log('Starting to test database...');
+        
         //queries are promises, so we can await them
         const users = await getAllUsers();
-        console.log('getAllusers', users);
+        console.log('getAllUsers: ', users);
 
-        console.log(users);
-        console.log('Finished database tests!')
+        
+        console.log('Finished database tests!');
+
     }catch(error){
         console.error('Error testing database!');
-    throw error;
+        throw error;
     }
 }
 
-testDB();
-
-//calls a query taht dropsTables
+//calls a query that dropsTables
 async function dropTables(){
     try{
-        console.log('Starting to drop tables...')
+        console.log('Starting to drop tables...');
         await client.query(`
-        DROP TABLE IF EXITSTS users;        
+        DROP TABLE IF EXISTS users;        
         `);
-        console.log('Finished dropping tables!')
+        console.log('Finished dropping tables!');
     }catch(error)
     {
-        console.error('Error dropping tables!')
-       throw error; //pass the error to teh function that calls dropTables
+        console.error('Error dropping tables!');
+       throw error; //pass the error to the function that calls dropTables
     }
 }
 
 async function createTables(){
     try{
-        console.log('Starting to build tables...')
+        console.log('Starting to build tables...');
+
         await client.query(`   
         CREATE TABLE users (
             id  SERIAL PRIMARY KEY,
-            username varchar(255) UNIUQUE NOT NULL,
+            username varchar(255) UNIQUE NOT NULL,
             password varchar(255) NOT NULL
         );
         `);
