@@ -24,8 +24,7 @@ testDB();
 async function dropTables(){
     try{
         await client.query(`
-        
-        
+        DROP TABLE IF EXITSTS users;        
         `);
     }catch(error)
     {
@@ -39,7 +38,7 @@ async function createTables(){
         `);
     }catch(error)
     {
-        throw error; //pass teh error up to teh function that calls createTables.
+        throw error; //pass the error up to the function that calls createTables.
     }
 }
 
