@@ -110,8 +110,48 @@ async function updateUser(id, fields = {}) {
 
   async function getAllPosts()
   {
-    
+    const {rows} = await client.query(
+      `SELECT id, active, authorID, title, content,
+      FROM posts;`
+  );
+
+  return rows;
   }
+
+async function getPostsByUser (userId) {
+  try {
+    const {rows} = await client.query(`
+    SELECT * FROM posts
+    WHERE 'authorId' = ${ userId }
+    `)
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+
+}
+
+async function getUserById (userId) {
+  try {
+  const {rows: [user]} = await client.query(`
+  SELECT * FROM users
+  WHERE 'authorId' = ${ userId }
+  `)
+  
+if (!user) {
+  return;
+}
+
+delete user.password;
+user.posts = getPostsByUser(userId); 
+
+return user;
+ } catch (error) {
+  throw error;
+ }
+}
+
 
 module.exports = {
     client,
