@@ -158,4 +158,8 @@ module.exports = {
     getAllUsers,
     createUser,
     updateUser,
+    getUserById,
+    getAllPosts,
+    updatePost,
+    createPost,
 }

@@ -99,10 +99,41 @@ async function rebuildDB() {
         await dropTables();
         await createTables();
         await createInitialUsers();
+        await createInitialPosts();
     }catch(error) {
         throw error;
     }
 }
+
+//posts functions
+async function createInitialPosts()
+{
+    try {
+        const [albert, sandra, glamgal] = await getAllUsers();
+    
+        await createPost({
+          authorId: albert.id,
+          title: "First Post",
+          content: "This is my first post. I hope I love writing blogs as much as I love writing them."
+        });
+    
+        await createPost({
+            authorId: sandra.id,
+            title: "First Post",
+            content: "This is Sandra's first post. I hope I love writing blogs as much as I love writing them."
+          });
+
+        await createPost({
+            authorId: glamgal.id,
+            title: "First Post",
+            content: "Fashion is not my passion"
+        });
+
+      } catch (error) {
+        throw error;
+      }
+}
+
 
 rebuildDB()
 .then(testDB)
