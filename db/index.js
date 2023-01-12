@@ -58,6 +58,61 @@ async function updateUser(id, fields = {}) {
     }
   }
 
+
+  //posts functions
+  async function createPost({
+    authorId,
+    title,
+    content
+  }){
+    try{
+        const {rows: [post] } = await client.query(`
+            INSERT INTO posts(authorId, title, content) 
+            VALUES ($1, $2, $3)
+            RETURNING *;
+        `,[authorId, title, content]);
+        return post;
+    }catch(error){
+        throw error;
+    }
+  }
+
+ async function updatePost(id, {
+    title,
+    content,
+    active
+  }){
+    
+    const setString = Object.keys(fields).map(
+    (key, index) => `"${ key }"=$${ index + 1 }`
+    ).join(', ');
+
+    // return early if this is called without fields
+    if (setString.length === 0) {
+    return;
+    }
+
+    try {
+    const { rows: [ post ] } = await client.query(`
+        UPDATE posts
+        SET ${ setString }
+        WHERE id=${ id }
+        RETURNING *;
+    `, Object.values(fields));
+
+    return post;
+
+    }catch(error)
+    {
+        throw error;
+    }
+  }
+
+  async function getAllPosts()
+  {
+    
+  }
+
 module.exports = {
     client,
     getAllUsers,
