@@ -67,7 +67,7 @@ async function updateUser(id, fields = {}) {
   }){
     try{
         const {rows: [post] } = await client.query(`
-            INSERT INTO posts(authorId, title, content) 
+            INSERT INTO posts("authorId", title, content) 
             VALUES ($1, $2, $3)
             RETURNING *;
         `,[authorId, title, content]);
@@ -77,7 +77,7 @@ async function updateUser(id, fields = {}) {
     }
   }
 
- async function updatePost(id, {
+ async function updatePost(id, fields = {
     title,
     content,
     active
@@ -111,7 +111,7 @@ async function updateUser(id, fields = {}) {
   async function getAllPosts()
   {
     const {rows} = await client.query(
-      `SELECT id, active, authorId, title, content,
+      `SELECT id, active, "authorId", title, content
       FROM posts;`
   );
 
@@ -122,7 +122,7 @@ async function getPostsByUser (userId) {
   try {
     const {rows} = await client.query(`
     SELECT * FROM posts
-    WHERE authorId = ${ userId }
+    WHERE "authorId" = ${ userId }
     `)
 
     return rows;
@@ -134,20 +134,18 @@ async function getPostsByUser (userId) {
 
 async function getUserById (userId) {
   try {
-  const {rows: [user]} = await client.query(`
-  SELECT * FROM users
-  WHERE authorId = ${ userId }
-  `)
-  
-if (!user) {
-  return null;
-}
+      const {rows} = await client.query(`
+      SELECT * FROM users
+      WHERE "authorId" = ${ userId }
+      `)
+    if (!rows) {
+      return;
+    }
 
-delete user.password;
-user.posts = getPostsByUser(userId); 
+    delete rows.password;
+    rows.posts = getPostsByUser(userId); 
 
-
-return user;
+    return user;
  } catch (error) {
   throw error;
  }

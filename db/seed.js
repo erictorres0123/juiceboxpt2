@@ -1,5 +1,5 @@
 //grab our client with destructuring from the export in index.js
-const {client, getAllUsers, createUser, updateUser, getUserById, getAllPosts, updatePost, createPost,} = require('./index');
+const {client, getAllUsers, createUser, updateUser,  getUserById, getAllPosts, updatePost, createPost,} = require('./index');
 
 async function testDB() {
     try{
@@ -17,6 +17,22 @@ async function testDB() {
         });
         console.log("Result:", updateUserResult);
     
+
+        console.log("Calling getAllPosts");
+        const posts = await getAllPosts();
+        console.log("Result:", posts);
+
+        console.log("Calling updatePost on posts[0]");
+        const updatePostResult = await updatePost(posts[0].id, {
+        title: "New Title",
+        content: "Updated Content"
+        });
+        console.log("Result:", updatePostResult);
+
+        console.log("Calling getUserById with 1");
+        const albert = await getUserById(1);
+        console.log("Result:", albert);
+
         
         console.log('Finished database tests!');
 
@@ -55,6 +71,9 @@ async function createTables(){
             location VARCHAR(255) NOT NULL,
             active BOOLEAN DEFAULT true
         );
+        `);
+
+        await client.query(`
         CREATE TABLE posts(
             id SERIAL PRIMARY KEY,
             authorId INTEGER REFERENCES users(id) NOT NULL,
