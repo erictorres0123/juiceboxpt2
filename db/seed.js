@@ -1,5 +1,5 @@
 //grab our client with destructuring from the export in index.js
-const {client, getAllUsers, createUser, updateUser,  getUserById, getAllPosts, updatePost, createPost,} = require('./index');
+const {client, getAllUsers, createUser, updateUser,  getUserById, getAllPosts, updatePost, createPost,addTagsToPost,createTags,} = require('./index');
 
 async function testDB() {
     try{
@@ -47,10 +47,10 @@ async function dropTables(){
     try{
         console.log('Starting to drop tables...');
         await client.query(`
-            DROP TABLE IF EXISTS posts;
-            DROP TABLE IF EXISTS users;
+            DROP TABLE IF EXISTS post_tags;
             DROP TABLE IF EXISTS tags;
-            DROP TABLE IF EXISTS post_tags;        
+            DROP TABLE IF EXISTS posts;
+            DROP TABLE IF EXISTS users;                   
         `);
         console.log('Finished dropping tables!');
     }catch(error)
@@ -133,6 +133,7 @@ async function rebuildDB() {
         await createTables();
         await createInitialUsers();
         await createInitialPosts();
+        await createInitialTags();
     }catch(error) {
         throw error;
     }
@@ -167,6 +168,30 @@ async function createInitialPosts()
       }
 }
 
+//make the starting tags
+async function createInitialTags() {
+    try {
+      console.log("Starting to create tags...");
+  
+      const [happy, sad, inspo, catman] = await createTags([
+        '#happy', 
+        '#worst-day-ever', 
+        '#youcandoanything',
+        '#catmandoeverything'
+      ]);
+  
+      const [postOne, postTwo, postThree] = await getAllPosts();
+  
+      await addTagsToPost(postOne.id, [happy, inspo]);
+      await addTagsToPost(postTwo.id, [sad, inspo]);
+      await addTagsToPost(postThree.id, [happy, catman, inspo]);
+  
+      console.log("Finished creating tags!");
+    } catch (error) {
+      console.log("Error creating tags!");
+      throw error;
+    }
+  }
 
 rebuildDB()
 .then(testDB)
