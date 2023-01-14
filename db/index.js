@@ -143,7 +143,7 @@ async function getUserById (userId) {
     }
 
     delete rows.password;
-    rows.posts = getPostsByUser(userId); 
+    rows.posts = await getPostsByUser(userId); 
 
     return user;
  } catch (error) {
