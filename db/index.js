@@ -134,12 +134,13 @@ async function getPostsByUser (userId) {
 
 async function getUserById (userId) {
   try {
-      const {rows} = await client.query(`
-      SELECT * FROM users
-      WHERE "authorId" = ${ userId }
+      const {rows: [user]} = await client.query(`
+      SELECT id, username, name, location, active
+      FROM users
+      WHERE id = ${ userId }
       `)
-    if (!rows) {
-      return;
+    if (!user) {
+      return null;
     }
 
     delete rows.password;
