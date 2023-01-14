@@ -166,13 +166,13 @@ const insertValues = tagList.map(
   try {
     const {rows: [tags]} = await client.query(`
     INSERT INTO tags(name)
-    VALUES ($1), ($2), ($3)
+    VALUES (${insertValues})
     ON CONFLICT (name) DO NOTHING;
     `)
     const {rows} = await client.query (`
     SELECT * FROM tags
     WHERE name
-    IN ($1, $2, $3);
+    IN (${selectValues});
     `)
     return rows;
   } catch (error) {
