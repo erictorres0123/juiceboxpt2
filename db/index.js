@@ -151,28 +151,27 @@ async function getUserById (userId) {
  }
 }
 
-async function createTags (tagList) {
+async function createTags(tagList) {
 if (tagList.length === 0) {
-  
   return;
 }
 
 const insertValues = tagList.map(
-  (_, index) => `${index + 1}`).join('), (');
+  (_, index) => `$${index + 1}`).join('), (');
 
-
+  
   const selectValues = tagList.map(
-    (_, index) => `${index + 1}`).join(', ');
+    (_, index) => `$${index + 1}`).join(', ');
 
   try {
     const {rows: [tags]} = await client.query(`
-    INSERT INTO tags (name)
+    INSERT INTO tags(name)
     VALUES ($1), ($2), ($3)
-    ON CONFLICT (tags) DO NOTHING
+    ON CONFLICT (name) DO NOTHING;
     `)
     const {rows} = await client.query (`
     SELECT * FROM tags
-    WHERE name 
+    WHERE name
     IN ($1, $2, $3);
     `)
     return rows;
