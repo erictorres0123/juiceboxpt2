@@ -1,5 +1,5 @@
 //grab our client with destructuring from the export in index.js
-const {client, getAllUsers, createUser, updateUser} = require('./index');
+const {client, getAllUsers, createUser, updateUser, getUserById, getAllPosts, updatePost, createPost,} = require('./index');
 
 async function testDB() {
     try{
@@ -57,7 +57,7 @@ async function createTables(){
         );
         CREATE TABLE posts(
             id SERIAL PRIMARY KEY,
-            "authorId" INTEGER REFERENCES users(id) NOT NULL,
+            authorId INTEGER REFERENCES users(id) NOT NULL,
             title varchar(255) NOT NULL,
             content TEXT NOT NULL,
             active BOOLEAN DEFAULT true
