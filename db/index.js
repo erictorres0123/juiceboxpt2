@@ -4,14 +4,17 @@ const {Client} = require('pg'); //imports the pg module needed for using psql
 const client = new Client('postgres://localhost:5432/juicebox-dev');
 
 async function getAllUsers(){
+  try {
     const {rows} = await client.query(
         `SELECT id, name, location, active, username
         FROM users;`
     );
 
     return rows;
+} catch (error) {
+  throw error;
 }
-
+}
 async function createUser({
     username,
     password,
@@ -81,39 +84,56 @@ async function updateUser(id, fields = {}) {
     }
   }
 
- async function updatePost(id, fields = {
-    title,
-    content,
-    active
-  }){
+ async function updatePost(postId, fields = {}) {
+  const { tags } = fields; 
+  delete fields.tags;
+
+  
     
     const setString = Object.keys(fields).map(
     (key, index) => `"${ key }"=$${ index + 1 }`
     ).join(', ');
 
-    // return early if this is called without fields
-    if (setString.length === 0) {
-    return;
-    }
 
     try {
-    const { rows: [ post ] } = await client.query(`
-        UPDATE posts
-        SET ${ setString }
-        WHERE id=${ id }
-        RETURNING *;
-    `, Object.values(fields));
+      // update any fields that need to be updated
+      if (setString.length > 0) {
+        await client.query(`
+          UPDATE posts
+          SET ${ setString }
+          WHERE id=${ postId }
+          RETURNING *;
+        `, Object.values(fields));
+      }
 
-    return post;
+    // return early if this is called without fields
+    if (tags === undefined) {
+    return await getPostById(postId);
+    }
 
-    }catch(error)
-    {
+    const tagList = await createTags(tags);
+    const tagListIdString = tagList.map(
+      tag => `${ tag.id }`
+    ).join(', ');
+
+await client.query(`
+DELETE FROM post_tags
+WHERE "tagId"
+NOT IN (${ tagListIdString })
+AND "postId"=$1;
+`, [postId]);
+
+await addTagsToPost(postId, tagList);
+
+    return await getPostById(postId);;
+
+    }catch(error) {
         throw error;
     }
   }
 
-  async function getAllPosts()
-  {
+  async function getAllPosts(){
+    
     const {rows: postIds} = await client.query(
       `SELECT id
       FROM posts;
