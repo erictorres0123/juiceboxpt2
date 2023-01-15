@@ -110,22 +110,30 @@ async function updateUser(id, fields = {}) {
 
   async function getAllPosts()
   {
-    const {rows} = await client.query(
-      `SELECT id, active, "authorId", title, content
-      FROM posts;`
-  );
+    const {rows: postIds} = await client.query(
+      `SELECT id
+      FROM posts;
+  `);
 
-  return rows;
+      const posts = await Promise.all(postIds.map(
+        post => getPostById( post.id)
+      ));
+
+  return posts;
   }
 
 async function getPostsByUser (userId) {
   try {
-    const {rows} = await client.query(`
-    SELECT * FROM posts
-    WHERE "authorId" = ${ userId }
-    `)
+    const {rows: postIds} = await client.query(`
+    SELECT id
+    FROM posts
+    WHERE "authorId" = ${ userId };
+    `);
 
-    return rows;
+    const posts = await Promise.all(postIds.map(
+      post => getPostById(post.id)
+    ));
+    return posts;
   } catch (error) {
     throw error;
   }
