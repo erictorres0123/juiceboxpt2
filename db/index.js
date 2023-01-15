@@ -169,7 +169,7 @@ const insertValues = tagList.map(
     VALUES (${insertValues})
     ON CONFLICT (name) DO NOTHING;
     `, tagList)
-    
+
     const {rows} = await client.query (`
     SELECT * FROM tags
     WHERE name
@@ -182,12 +182,13 @@ const insertValues = tagList.map(
 }
 
 async function createPostTag(postId, tagId){
+  
   try{
     await client.query(`
       INSERT INTO post_tags("postId", "tagId")
       VALUES ($1, $2)
       ON CONFLICT ("postId", "tagId") DO NOTHING;
-    `, [postId, tagId])
+    `, [postId, tagId]);
   }catch(error){
     throw error;
   }
