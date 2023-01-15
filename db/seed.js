@@ -1,5 +1,17 @@
 //grab our client with destructuring from the export in index.js
-const {client, getAllUsers, createUser, updateUser,  getUserById, getAllPosts, updatePost, createPost,addTagsToPost,createTags} = require('./index');
+const {client, 
+    getAllUsers, 
+    createUser, 
+    updateUser,  
+    getUserById, 
+    getAllPosts, 
+    updatePost, 
+    createPost,
+    addTagsToPost,
+    createTags,
+    getPostById,
+    getPostsByTagName,
+    createPostTag} = require('./index');
 
 async function testDB() {
     try{
@@ -40,6 +52,10 @@ async function testDB() {
         console.log("Result:", updatePostTagsResult);
 
         
+        console.log("Calling getPostsByTagName with #happy");
+        const postsWithHappy = await getPostsByTagName("#happy");
+        console.log("Result:", postsWithHappy);
+
         console.log('Finished database tests!');
 
     }catch(error){
