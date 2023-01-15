@@ -1,5 +1,5 @@
 //grab our client with destructuring from the export in index.js
-const {client, getAllUsers, createUser, updateUser,  getUserById, getAllPosts, updatePost, createPost,addTagsToPost,createTags,} = require('./index');
+const {client, getAllUsers, createUser, updateUser,  getUserById, getAllPosts, updatePost, createPost,addTagsToPost,createTags} = require('./index');
 
 async function testDB() {
     try{
@@ -144,23 +144,28 @@ async function createInitialPosts()
 {
     try {
         const [albert, sandra, glamgal] = await getAllUsers();
-    
+        
+        console.log("Starting to create posts...");
+
         await createPost({
           authorId: albert.id,
           title: "First Post",
-          content: "This is my first post. I hope I love writing blogs as much as I love writing them."
+          content: "This is my first post. I hope I love writing blogs as much as I love writing them.",
+          //tags: ["#happy", "#youcandoanything"]
         });
     
         await createPost({
             authorId: sandra.id,
             title: "First Post",
-            content: "This is Sandra's first post. I hope I love writing blogs as much as I love writing them."
+            content: "This is Sandra's first post. I hope I love writing blogs as much as I love writing them.",
+            //tags: ["#happy", "#worst-day-ever"]
           });
 
         await createPost({
             authorId: glamgal.id,
             title: "First Post",
-            content: "Fashion is not my passion"
+            content: "Fashion is not my passion",
+            //tags: ["#happy", "#youcandoanything", "#canmandoeverything"]
         });
 
       } catch (error) {
@@ -179,6 +184,7 @@ async function createInitialTags() {
         '#youcandoanything',
         '#catmandoeverything'
       ]);
+
       console.log("created Tags");
       const [postOne, postTwo, postThree] = await getAllPosts();
   

@@ -63,7 +63,8 @@ async function updateUser(id, fields = {}) {
   async function createPost({
     authorId,
     title,
-    content
+    content,
+    tags = []
   }){
     try{
         const {rows: [post] } = await client.query(`
@@ -71,7 +72,10 @@ async function updateUser(id, fields = {}) {
             VALUES ($1, $2, $3)
             RETURNING *;
         `,[authorId, title, content]);
-        return post;
+
+        const tagList = await createTags(tags);
+
+        return await addTagsToPost(post.id, tagList);
     }catch(error){
         throw error;
     }
@@ -204,6 +208,7 @@ async function createPostTag(postId, tagId){
 
 async function addTagsToPost(postId, tagList)
 {
+  console.log(tagList);
   try{
     const createPostTagPromises = tagList.map(
       tag => createPostTag(postId, tag.id)
