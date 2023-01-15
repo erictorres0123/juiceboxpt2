@@ -179,9 +179,11 @@ async function createInitialTags() {
         '#youcandoanything',
         '#catmandoeverything'
       ]);
-  
+      console.log("created Tags");
       const [postOne, postTwo, postThree] = await getAllPosts();
   
+      console.log("Got posts");
+
       await addTagsToPost(postOne.id, [happy, inspo]);
       await addTagsToPost(postTwo.id, [sad, inspo]);
       await addTagsToPost(postThree.id, [happy, catman, inspo]);
