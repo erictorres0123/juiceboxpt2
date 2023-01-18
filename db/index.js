@@ -1,5 +1,7 @@
 const {Client} = require('pg'); //imports the pg module needed for using psql
 
+
+
 //supply the db name and location of the database
 const client = new Client('postgres://localhost:5432/juicebox-dev');
 
@@ -18,7 +20,7 @@ async function getAllUsers(){
 async function createUser({
     username,
     password,
-    name,
+    name, 
     location})
 {
     try
@@ -291,6 +293,7 @@ async function getPostsByTagName(tagName) {
     throw error;
   }
 } 
+
 
 module.exports = {
     client,
