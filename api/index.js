@@ -1,6 +1,5 @@
 
 
-
 //The express object is useful for more than creating a server. Here we use the Router function to create a new router, and then export it from the script.
 const express = require('express');
 const apiRouter = express.Router();
@@ -39,6 +38,14 @@ apiRouter.use(async (req, res, next) => {
     });
   }
 });
+
+apiRouter.use((req, res, next) => {
+    if (req.user) {
+      console.log("User is set:", req.user);
+    }
+  
+    next();
+  });
 
 const usersRouter = require('./users');
 apiRouter.use('/users', usersRouter);
