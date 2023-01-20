@@ -11,6 +11,7 @@ const {client,
     createTags,
     getPostById,
     getPostsByTagName,
+    getUserByUsername,
     createPostTag} = require('./index');
 
 async function testDB() {
